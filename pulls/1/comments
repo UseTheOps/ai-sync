@@ -1,0 +1,25 @@
+Great start on the VS Code extension! 
+
+I think we should also include **skills, custom prompts & custom agents definitions** in the sync functionality.
+
+Currently, the extension syncs:
+- Directories: `.github/copilot/`, `copilot/`, `.copilot/`
+- Files: `.copilotignore`, `copilot.{yaml,yml,json}`, `copilot-instructions.md`, `copilot.md`
+
+**Suggested additions:**
+
+1. **Custom Skills**
+   - Directory: `.github/skills/`
+   - Common patterns: `*.md`, `skill-*.yaml`
+
+2. **Custom Prompts**
+   - Directory: `.github/prompts/`
+   - Patterns: `*.md`, `*.txt`, prompt configuration files
+
+3. **Custom Agents**
+   - Directory: `.github/copilot/agents/`
+   - Patterns: `*.json`, `*.yaml`, `*.yml`, agent definition files
+
+These are all part of the Copilot workspace configuration ecosystem and would be valuable to sync alongside the existing Copilot files for a complete AI development environment setup.
+
+What do you think about expanding the scope to include these?
