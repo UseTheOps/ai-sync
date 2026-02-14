@@ -225,11 +225,24 @@ async function getAllFilesInDirectory(dir: string): Promise<string[]> {
  */
 function isCopilotPath(filepath: string): boolean {
   const normalizedPath = filepath.replace(/\\/g, '/').toLowerCase();
-  return (
-    normalizedPath.includes('/.github/copilot') ||
-    normalizedPath.includes('/copilot') ||
-    normalizedPath.includes('/.copilot')
-  );
+  const pathSegments = normalizedPath.split('/');
+  
+  // Check for specific copilot directory patterns
+  for (let i = 0; i < pathSegments.length; i++) {
+    const segment = pathSegments[i];
+    
+    // Check for standalone copilot or .copilot directories
+    if (segment === 'copilot' || segment === '.copilot') {
+      return true;
+    }
+    
+    // Check for .github/copilot pattern
+    if (segment === '.github' && i + 1 < pathSegments.length && pathSegments[i + 1] === 'copilot') {
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 /**
@@ -237,11 +250,16 @@ function isCopilotPath(filepath: string): boolean {
  */
 function isCopilotFile(filename: string): boolean {
   const lowerFilename = filename.toLowerCase();
-  return (
-    lowerFilename.includes('copilot') ||
-    lowerFilename === '.copilotignore' ||
-    lowerFilename === 'copilot.yaml' ||
-    lowerFilename === 'copilot.yml' ||
-    lowerFilename === 'copilot.json'
-  );
+  
+  // Specific copilot configuration files
+  const specificCopilotFiles = [
+    '.copilotignore',
+    'copilot.yaml',
+    'copilot.yml',
+    'copilot.json',
+    'copilot-instructions.md',
+    'copilot.md'
+  ];
+  
+  return specificCopilotFiles.includes(lowerFilename);
 }
