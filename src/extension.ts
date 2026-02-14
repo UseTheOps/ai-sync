@@ -240,6 +240,22 @@ function isCopilotPath(filepath: string): boolean {
     if (segment === '.github' && i + 1 < pathSegments.length && pathSegments[i + 1] === 'copilot') {
       return true;
     }
+    
+    // Check for .github/skills pattern
+    if (segment === '.github' && i + 1 < pathSegments.length && pathSegments[i + 1] === 'skills') {
+      return true;
+    }
+    
+    // Check for .github/prompts pattern
+    if (segment === '.github' && i + 1 < pathSegments.length && pathSegments[i + 1] === 'prompts') {
+      return true;
+    }
+    
+    // Check for .github/copilot/agents pattern
+    if (segment === '.github' && i + 2 < pathSegments.length && 
+        pathSegments[i + 1] === 'copilot' && pathSegments[i + 2] === 'agents') {
+      return true;
+    }
   }
   
   return false;

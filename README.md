@@ -6,8 +6,11 @@ A Visual Studio Code extension for cloning and syncing GitHub Copilot configurat
 
 - **Clone Copilot Files**: Easily clone GitHub Copilot configuration files from any git repository
 - **Smart File Detection**: Automatically detects copilot-related files and directories including:
-  - `.github/copilot`, `copilot`, or `.copilot` directories
-  - Specific copilot configuration files: `.copilotignore`, `copilot.yaml`, `copilot.yml`, `copilot.json`, `copilot-instructions.md`, `copilot.md`
+  - **Copilot Configuration**: `.github/copilot`, `copilot`, or `.copilot` directories
+  - **Custom Skills**: `.github/skills/` directory with all `*.md`, `skill-*.yaml`, and `skill-*.yml` files
+  - **Custom Prompts**: `.github/prompts/` directory with all `*.md`, `*.txt`, `prompt-*.yaml`, and `prompt-*.yml` files
+  - **Custom Agents**: `.github/copilot/agents/` directory with all `*.json`, `*.yaml`, `*.yml`, and `agent-*.json` files
+  - **Specific Files**: `.copilotignore`, `copilot.yaml`, `copilot.yml`, `copilot.json`, `copilot-instructions.md`, `copilot.md`
 - **Configurable Target Path**: Choose where to save the cloned files (default: `.github/copilot`)
 - **Progress Indicators**: Visual feedback during the cloning process
 
