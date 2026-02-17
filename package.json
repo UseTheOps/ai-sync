@@ -1,0 +1,71 @@
+{
+  "name": "ai-sync",
+  "displayName": "AI Sync",
+  "description": "Clone and sync GitHub Copilot configuration files from git repositories",
+  "version": "0.0.1",
+  "publisher": "UseTheOps",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:ai-sync.cloneCopilotFiles"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-sync.cloneCopilotFiles",
+        "title": "AI Sync: Clone Copilot Files from Repository"
+      }
+    ],
+    "configuration": {
+      "title": "AI Sync",
+      "properties": {
+        "ai-sync.defaultTargetPath": {
+          "type": "string",
+          "default": "~/.copilot",
+          "description": "Default path where copilot files will be saved (absolute paths recommended)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "simple-git": "^3.25.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UseTheOps/ai-sync.git"
+  },
+  "keywords": [
+    "copilot",
+    "github",
+    "sync",
+    "clone",
+    "ai"
+  ],
+  "author": "UseTheOps",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UseTheOps/ai-sync/issues"
+  },
+  "homepage": "https://github.com/UseTheOps/ai-sync#readme"
+}
