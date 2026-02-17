@@ -26,8 +26,8 @@
       "properties": {
         "ai-sync.defaultTargetPath": {
           "type": "string",
-          "default": ".github/copilot",
-          "description": "Default path where copilot files will be saved"
+          "default": "~/.copilot",
+          "description": "Default path where copilot files will be saved (absolute paths recommended)"
         }
       }
     }

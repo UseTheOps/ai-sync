@@ -11,7 +11,7 @@ A Visual Studio Code extension for cloning and syncing GitHub Copilot configurat
   - **Custom Prompts**: `.github/prompts/` directory with all `*.md`, `*.txt`, `prompt-*.yaml`, and `prompt-*.yml` files
   - **Custom Agents**: `.github/copilot/agents/` directory with all `*.json`, `*.yaml`, `*.yml`, and `agent-*.json` files
   - **Specific Files**: `.copilotignore`, `copilot.yaml`, `copilot.yml`, `copilot.json`, `copilot-instructions.md`, `copilot.md`
-- **Configurable Target Path**: Choose where to save the cloned files (default: `.github/copilot`)
+- **Configurable Target Path**: Choose where to save the cloned files (default: `~/.copilot`)
 - **Progress Indicators**: Visual feedback during the cloning process
 
 ## Usage
@@ -20,7 +20,7 @@ A Visual Studio Code extension for cloning and syncing GitHub Copilot configurat
 2. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac)
 3. Type "AI Sync: Clone Copilot Files from Repository"
 4. Enter the Git repository URL (e.g., `https://github.com/username/repository.git`)
-5. Enter the target path where copilot files should be saved (default: `.github/copilot`)
+5. Enter the target path where copilot files should be saved (default: `~/.copilot`)
 6. Wait for the operation to complete
 
 ## Configuration
@@ -29,7 +29,7 @@ You can configure the default target path in VS Code settings:
 
 ```json
 {
-  "ai-sync.defaultTargetPath": ".github/copilot"
+  "ai-sync.defaultTargetPath": "~/.copilot"
 }
 ```
 

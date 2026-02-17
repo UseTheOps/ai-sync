@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as os from 'os';
 import simpleGit from 'simple-git';
 
 /**
@@ -48,25 +49,31 @@ async function cloneCopilotFiles() {
       return; // User cancelled
     }
 
-    // Get workspace folder
-    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-    if (!workspaceFolder) {
-      vscode.window.showErrorMessage('No workspace folder is open');
-      return;
-    }
-
     // Get target path from configuration or use default
     const config = vscode.workspace.getConfiguration('ai-sync');
-    const defaultTargetPath = config.get<string>('defaultTargetPath') || '.github/copilot';
+    const configuredDefaultPath = config.get<string>('defaultTargetPath');
+    const defaultTargetPath =
+      configuredDefaultPath || path.join(os.homedir(), '.copilot');
+    const defaultTargetPathDisplay = configuredDefaultPath || '~/.copilot';
 
     const targetPath = await vscode.window.showInputBox({
       prompt: 'Enter the target path where copilot files will be saved',
-      placeHolder: defaultTargetPath,
+      placeHolder: defaultTargetPathDisplay,
       value: defaultTargetPath,
     });
 
     if (!targetPath) {
       return; // User cancelled
+    }
+
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+    let targetDir: string;
+    try {
+      targetDir = resolveTargetPath(targetPath, workspaceFolder);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      vscode.window.showErrorMessage(message);
+      return;
     }
 
     // Show progress
@@ -80,10 +87,8 @@ async function cloneCopilotFiles() {
         progress.report({ message: 'Cloning repository...' });
 
         // Create a temporary directory for cloning
-        const tmpDir = path.join(
-          workspaceFolder.uri.fsPath,
-          '.ai-sync-tmp',
-          Date.now().toString()
+        const tmpDir = await fs.promises.mkdtemp(
+          path.join(os.tmpdir(), 'ai-sync-')
         );
 
         try {
@@ -118,7 +123,6 @@ async function cloneCopilotFiles() {
 
           // Copy copilot files to target location
           progress.report({ message: 'Copying copilot files...' });
-          const targetDir = path.join(workspaceFolder.uri.fsPath, targetPath);
           await fs.promises.mkdir(targetDir, { recursive: true });
 
           let copiedCount = 0;
@@ -235,6 +239,11 @@ function isCopilotPath(filepath: string): boolean {
     if (segment === 'copilot' || segment === '.copilot') {
       return true;
     }
+
+    // Allow top-level skills/prompts/agents directories
+    if (segment === 'skills' || segment === 'prompts' || segment === 'agents') {
+      return true;
+    }
     
     // Check for .github/copilot pattern
     if (segment === '.github' && i + 1 < pathSegments.length && pathSegments[i + 1] === 'copilot') {
@@ -278,4 +287,40 @@ function isCopilotFile(filename: string): boolean {
   ];
   
   return specificCopilotFiles.includes(lowerFilename);
+}
+
+/**
+ * Resolves the user-provided target path, supporting absolute paths and tilde expansion.
+ * Falls back to workspace-relative paths if a workspace is open.
+ */
+function resolveTargetPath(
+  inputPath: string,
+  workspaceFolder?: vscode.WorkspaceFolder
+): string {
+  const expandedPath = expandUserPath(inputPath);
+
+  if (path.isAbsolute(expandedPath)) {
+    return expandedPath;
+  }
+
+  if (workspaceFolder) {
+    return path.join(workspaceFolder.uri.fsPath, expandedPath);
+  }
+
+  throw new Error('Please provide an absolute target path or open a workspace folder.');
+}
+
+/**
+ * Expands '~' to the current user's home directory.
+ */
+function expandUserPath(inputPath: string): string {
+  if (!inputPath) {
+    return inputPath;
+  }
+
+  if (inputPath.startsWith('~')) {
+    return path.join(os.homedir(), inputPath.slice(1));
+  }
+
+  return inputPath;
 }
