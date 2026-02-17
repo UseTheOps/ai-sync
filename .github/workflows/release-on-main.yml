@@ -9,7 +9,7 @@ jobs:
   tag-and-package:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # required to push tags and create releases
+      contents: write # required to push tags and create releases
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ai-sync-vsix
-          path: '*.vsix'
+          path: "*.vsix"
 
       - name: Bump tag and create release
         id: tagger
@@ -57,6 +57,6 @@ jobs:
           tag_name: ${{ steps.tagger.outputs.new_tag }}
           name: ${{ steps.tagger.outputs.new_tag }}
           body: ${{ steps.tagger.outputs.changelog }}
-          files: '*.vsix'
+          files: "*.vsix"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
