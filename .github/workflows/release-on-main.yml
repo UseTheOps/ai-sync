@@ -1,0 +1,62 @@
+name: Auto Tag and Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag-and-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # required to push tags and create releases
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Compile
+        run: npm run compile
+
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+
+      - name: Package VSIX
+        run: vsce package
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-sync-vsix
+          path: '*.vsix'
+
+      - name: Bump tag and create release
+        id: tagger
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          tag_prefix: v
+          default_bump: patch
+          dry_run: false
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tagger.outputs.new_tag }}
+          name: ${{ steps.tagger.outputs.new_tag }}
+          body: ${{ steps.tagger.outputs.changelog }}
+          files: '*.vsix'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
