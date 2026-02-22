@@ -24,6 +24,11 @@
     "configuration": {
       "title": "AI Sync",
       "properties": {
+        "ai-sync.repoUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Git repository URL to sync copilot files from"
+        },
         "ai-sync.defaultTargetPath": {
           "type": "string",
           "default": "~/.copilot",
