@@ -30,10 +30,14 @@ export function deactivate() {}
  */
 async function cloneCopilotFiles() {
   try {
-    // Get the repository URL from user
+    const config = vscode.workspace.getConfiguration('ai-sync');
+
+    // Get the repository URL from user, pre-filling with the saved value
+    const savedRepoUrl = config.get<string>('repoUrl') || '';
     const repoUrl = await vscode.window.showInputBox({
       prompt: 'Enter the Git repository URL',
       placeHolder: 'https://github.com/username/repository.git',
+      value: savedRepoUrl,
       validateInput: (value) => {
         if (!value) {
           return 'Repository URL is required';
@@ -50,7 +54,6 @@ async function cloneCopilotFiles() {
     }
 
     // Get target path from configuration or use default
-    const config = vscode.workspace.getConfiguration('ai-sync');
     const configuredDefaultPath = config.get<string>('defaultTargetPath');
     const defaultTargetPath =
       configuredDefaultPath || path.join(os.homedir(), '.copilot');
@@ -144,6 +147,9 @@ async function cloneCopilotFiles() {
           await fs.promises.rm(tmpDir, { recursive: true, force: true });
 
           if (!token.isCancellationRequested) {
+            // Save repo URL and target path to settings for future use
+            await config.update('repoUrl', repoUrl, vscode.ConfigurationTarget.Global);
+            await config.update('defaultTargetPath', targetPath, vscode.ConfigurationTarget.Global);
             vscode.window.showInformationMessage(
               `Successfully copied ${copiedCount} copilot file(s) to ${targetPath}`
             );
